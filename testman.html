@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Hangman</title>
+</head>
+<body>
+<h1>Hangman</h1>
+<p id="bodypart"></p>
+<p id="alert"></p>
+<p id="word">Word: </p>
+<p id="miss">Misses: 0/7</p>
+<p id="debug"></p>
+<p id="hand"></p>
+
+<button id="a" onclick="activateButtonA()">a</button>
+<button id="1" onclick="activateButton1()">1</button>
+<br />
+<br />
+<button id="restart" onclick="startNewGame()">Start New Game</button>
+
+<p id=""></p>
+
+<script type="text/javascript">
+	window.addEventListener("load", startNewGame, false); //loads at start
+
+    var wordArray = ["dinosaur", "igloo", "fortran", "homework", "pancake", "cheese", "pepperoni",
+    	"notebook","pencil", "computer", "database", "movie", "buffet", "titan", "castle", "calendar"];
+    var card = [
+    {num:"2", suit:"d"}, {num:"3", suit:"d"}, {num:"4", suit:"d"}, {num:"5", suit:"d"}, {num:"6", suit:"d"},
+    {num:"7", suit:"d"}, {num:"8", suit:"d"}, {num:"9", suit:"d"}, {num:"10", suit:"d"}, {num:"J", suit:"d"}, 
+    {num:"Q", suit:"d"}, {num:"K", suit:"d"}, {num:"A", suit:"d"}, 
+    {num:"2", suit:"c"}, {num:"3", suit:"c"}, {num:"4", suit:"c"}, {num:"5", suit:"c"}, {num:"6", suit:"c"},
+    {num:"7", suit:"c"}, {num:"8", suit:"c"}, {num:"9", suit:"c"}, {num:"10", suit:"c"}, {num:"J", suit:"c"}, 
+    {num:"Q", suit:"c"}, {num:"K", suit:"c"}, {num:"A", suit:"c"},
+    {num:"2", suit:"h"}, {num:"3", suit:"h"}, {num:"4", suit:"h"}, {num:"5", suit:"h"}, {num:"6", suit:"h"},
+    {num:"7", suit:"h"}, {num:"8", suit:"h"}, {num:"9", suit:"h"}, {num:"10", suit:"h"}, {num:"J", suit:"h"}, 
+    {num:"Q", suit:"h"}, {num:"K", suit:"h"}, {num:"A", suit:"h"},
+    {num:"2", suit:"s"}, {num:"3", suit:"s"}, {num:"4", suit:"s"}, {num:"5", suit:"s"}, {num:"6", suit:"s"},
+    {num:"7", suit:"s"}, {num:"8", suit:"s"}, {num:"9", suit:"s"}, {num:"10", suit:"s"}, {num:"J", suit:"s"}, 
+    {num:"Q", suit:"s"}, {num:"K", suit:"s"}, {num:"A", suit:"s"}]; // 0-12 d, 13-25 c, 27-38 h, 40-51 s
+    var word; // current word
+    var miss = 0; 
+    var space; // string with - use it to construct word 
+    var arr; // turn space into an array so we can splice
+    var won = false; //when won stops miss counter from incrementing
+    var lost = false; //when lost stops player from winning
+
+    function activateButtonA() {
+    	// does button things
+    	document.getElementById("a").style.visibility="hidden";
+    	checkLetter("a");
+    }
+    function checkLetter(letter){
+    	//if hit
+    	var i;
+    	var hit = false;
+    	for(i=0; i<word.length;i++){  
+    		// goes to every char and replaces if equal
+    		if(letter == word.charAt(i)){
+    			hit = true;
+    			//delete - from space and insert letter into array
+
+    			arr.splice(i,1,letter);
+    			space = arr.join();
+    			space = space.replace(/,/g, '');
+    			//document.getElementById("word").innerHTML = "Word: " + space;
+    			document.getElementById("word").innerHTML = "Word: " + space;
+
+    			
+    			//if whole word is ever equal then win
+    			if(word == space && lost == false){
+    			document.getElementById("alert").innerHTML = "You Win!";
+    			won = true;
+    			}
+    		}
+    	}
+
+    	//if miss
+    	if(hit == false && won == false){
+    		miss++;
+    		//add body part
+    		if(miss == 1){
+    			document.getElementById("miss").innerHTML = "Misses: 1/7";
+    			document.getElementById("bodypart").innerHTML = "One rope piece";
+    		}
+    		else if(miss == 2){
+    			document.getElementById("miss").innerHTML = "Misses: 2/7";
+    			document.getElementById("bodypart").innerHTML = "Two rope pieces";
+    		}
+    		else if(miss == 3){
+    			document.getElementById("miss").innerHTML = "Misses: 3/7";
+    			document.getElementById("bodypart").innerHTML = "Two rope pieces, head";
+    		}
+    		else if(miss == 4){
+    			document.getElementById("miss").innerHTML = "Misses: 4/7";
+    			document.getElementById("bodypart").innerHTML = "Two rope pieces, head, neck";
+    		}
+    		else if(miss == 5){
+    			document.getElementById("miss").innerHTML = "Misses: 5/7";
+    			document.getElementById("bodypart").innerHTML = "Two rope pieces, head, neck, torso";
+    		}
+    		else if(miss == 6){
+    			document.getElementById("miss").innerHTML = "Misses: 6/7";
+    			document.getElementById("bodypart").innerHTML = "Two rope pieces, head, neck, torso, one leg";
+    		}
+    		else{
+    			document.getElementById("bodypart").innerHTML = "Two rope pieces, head, neck, torso, two legs";
+    			document.getElementById("miss").innerHTML = "Misses: 7/7";
+    			document.getElementById("alert").innerHTML = "You lose. The word was:" + wordArray[1];
+    			lost = true;
+    		}
+    	}
+    }
+    function startNewGame(){
+    	//shuffle array
+    	wordArray.sort(function(a, b){return 0.5 - Math.random()});
+        card.sort(function(a, b){return 0.5 - Math.random()});
+    	
+    	//set up spaces for new word
+    	word = wordArray[1]
+    	var i;
+    	space = "";
+    	for (i = 0; i < word.length; i++) {
+    		space += "-";
+    	}
+    	arr = space.split('');
+    	document.getElementById("word").innerHTML = "Word: " + space;
+        document.getElementById("1").innerHTML = card[0].num + card[0].suit;
+
+
+    	//reset visbility of buttons
+    	document.getElementById("a").style.visibility="visible";
+    	document.getElementById("b").style.visibility="visible";
+    	document.getElementById("c").style.visibility="visible";
+    	document.getElementById("d").style.visibility="visible";
+    	document.getElementById("e").style.visibility="visible";
+    	document.getElementById("f").style.visibility="visible";
+    	document.getElementById("g").style.visibility="visible";
+    	document.getElementById("h").style.visibility="visible";
+    	document.getElementById("i").style.visibility="visible";
+    	document.getElementById("j").style.visibility="visible";
+    	document.getElementById("k").style.visibility="visible";
+    	document.getElementById("l").style.visibility="visible";
+    	document.getElementById("m").style.visibility="visible";
+    	document.getElementById("n").style.visibility="visible";
+    	document.getElementById("o").style.visibility="visible";
+    	document.getElementById("p").style.visibility="visible";
+    	document.getElementById("q").style.visibility="visible";
+    	document.getElementById("r").style.visibility="visible";
+    	document.getElementById("s").style.visibility="visible";
+    	document.getElementById("t").style.visibility="visible";
+    	document.getElementById("u").style.visibility="visible";
+    	document.getElementById("v").style.visibility="visible";
+    	document.getElementById("w").style.visibility="visible";
+    	document.getElementById("x").style.visibility="visible";
+    	document.getElementById("y").style.visibility="visible";
+    	document.getElementById("z").style.visibility="visible";
+    	
+    	//reset miss counter
+    	miss = 0;
+    	document.getElementById("miss").innerHTML = "Misses: 0/7";
+    	
+    	//reset bodypart
+    	document.getElementById("bodypart").innerHTML = "";
+
+    	//reset alerts
+    	document.getElementById("alert").innerHTML = "";
+
+    	//reset won/lost
+    	won = false;
+    	lost = false;
+    }
+
+
+       
+</script>
+
+</body>
+</html>
